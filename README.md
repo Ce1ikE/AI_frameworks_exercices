@@ -1,0 +1,2 @@
+# AI_frameworks_exercices
+AI_frameworks
