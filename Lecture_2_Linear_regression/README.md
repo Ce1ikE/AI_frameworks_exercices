@@ -1,5 +1,5 @@
 ## project: setup
-- `dataset/input` should contain the training data `food_truck.txt` and `housing_prices.txt`
+- `dataset` should contain the training data `food_truck.txt` and `housing_prices.txt`
 - `lib` contains the the custom implementations of linear regression
 
 ## project: how to run ?
