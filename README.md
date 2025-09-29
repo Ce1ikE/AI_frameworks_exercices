@@ -1,2 +1,2 @@
 # AI_frameworks_exercices
-AI_frameworks
+this repository contains all lecture exercices

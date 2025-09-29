@@ -1,0 +1,19 @@
+{
+    "custom": {
+        "theta": {
+            "final_theta0": -1.1107545143680508e-16,
+            "final_theta1": 0.8847659878549438,
+            "final_theta2": -0.05317881966327445
+        },
+        "final_cost": 0.13068648053904197,
+        "learning_rate": 0.01,
+        "num_iterations": 100000
+    },
+    "sklearn": {
+        "intercept": -1.1568575416727602e-16,
+        "coefficient": [
+            0.8847659878549526,
+            -0.05317881966327953
+        ]
+    }
+}

@@ -4,57 +4,48 @@ from statistics import linear_regression
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 from lib.LinearRegression import LinearRegressionCustom
+from lib.DataGatherer import DataGatherer
+from lib.StdScaler import StdScaler
 import json
 from pathlib import Path
 
-def plot_data(X, y):
-    plt.scatter(X, y)
-    plt.xlabel('Population of City in 10,000s')
-    plt.ylabel('Profit in $10,000s')
-    plt.title('Food Truck Profit vs City Population')
-    plt.show()
-
-def read_data(path: Path = './datasets/food_truck.txt'):
-    #read from dataset
-    data = pd.read_csv(path, header = None, delimiter = ",") 
-    # read first column, will be put in a 'series' variable
-    X = data.iloc[:,0] 
-    print('X.shape: ', X.shape)
-    # read second column, will be put in a 'series' variable
-    y = data.iloc[:,1] 
-    print('y.shape: ', y.shape)
-    # number of training examples
-    m = len(y) 
-    print('Number of samples:', m)
-    # view first few rows of the data
-    print(data.head()) 
-    plot_data(X, y)
-    return X, y
-
 def linear_regression_exercice():
-    X, y = read_data("./datasets/food_truck.txt")
-    
+    # ------------- Gather Data ------------- #
+    #  - 1st column : the population of a city and 
+    #  - 2nd column : the profit of a food truck in that city. (A negative value for profit indicates a loss)
+    path = Path(__file__).parent / 'datasets/food_truck.txt'
+    X, y = DataGatherer(plot=True, path=path).read_data(X_cols=[0], y_col=1)
+
+    # ------------- Feature Scaling ------------- #
+    # ...
+
     # ------------- Custom Linear Regression ------------- #
     lr_c = LinearRegressionCustom(
         save_plots=True, 
         save_results=True, 
         num_iterations=100000, 
-        learning_rate=0.01
+        learning_rate=0.01,
+        check_costs_every_n_iter=5000,
+
     )
-    lr_c.run_linear_regression(X, y)
-    
+    lr_c.run_linear_regression(
+        X=X, y=y,
+        label_x=['Population of City in 10,000s'],
+        label_y='Profit in $10,000s'
+    )
+
     # ------------- Sklearn Regression ------------- #
     lr = LinearRegression().fit(
-        X=X.to_numpy()[:,np.newaxis], 
-        y=y.to_numpy()[:,np.newaxis]
+        X=X.to_numpy(), 
+        y=y.to_numpy()
     )
 
     # ------------- final results ------------- #
     final_results = {
         'custom': lr_c.result[-1] if lr_c.result else None,
         'sklearn': {
-            'intercept': lr.intercept_[0],
-            'coefficient': lr.coef_[0][0]
+            'intercept': lr.intercept_.tolist(),
+            'coefficient': lr.coef_.tolist(),
         }
     }
     with open(lr_c.save_path / 'final_results.json', 'w') as f:
@@ -62,7 +53,49 @@ def linear_regression_exercice():
 
 
 def linear_regression_multivariate_exercice():
-    pass
+    # ------------- Gather Data ------------- #
+    # - 1st column : size of the house (in square feet)
+    # - 2nd column : the number of bedrooms
+    # - 3rd column : the price of the house
+    path = Path(__file__).parent / 'datasets/housing_prices.txt'
+    X, y = DataGatherer(plot=True, path=path).read_data(X_cols=[0,1], y_col=2)
+
+    # ------------- Feature Scaling ------------- #
+    # experienced overflow errors when not scaling the features 
+    # so well here is my StdScaler (like sklearn's StandardScaler)
+    scaler = StdScaler()
+    X = scaler.fit_transform(X)
+    y = scaler.fit_transform(y)
+
+    # ------------- Custom Linear Regression ------------- #
+    lr_c = LinearRegressionCustom(
+        save_plots=True, 
+        save_results=True, 
+        num_iterations=100000, 
+        learning_rate=0.01,
+        check_costs_every_n_iter=5000,
+    )
+    lr_c.run_linear_regression(
+        X=X, y=y,
+        label_x=['Size of the house (in square feet)', 'Number of bedrooms'],
+        label_y='Price of the house'
+    )
+
+    # ------------- Sklearn Regression ------------- #
+    lr = LinearRegression().fit(
+        X=X.to_numpy(), 
+        y=y.to_numpy()
+    )
+    # ------------- final results ------------- #
+    final_results = {
+        'custom': lr_c.result[-1] if lr_c.result else None,
+        'sklearn': {
+            'intercept': lr.intercept_.tolist(),
+            'coefficient': lr.coef_.tolist(),
+        }
+    }
+    with open(lr_c.save_path / 'final_results_multivariate.json', 'w') as f:
+        json.dump(final_results, f, indent=4)
 
 def main():
     linear_regression_exercice()
