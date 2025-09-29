@@ -5,7 +5,7 @@
 ## project: how to run ?
 First you must install the required libraries either using the `requirements.txt` or the `pyproject.toml`
 ```sh
-# create a virtual environment either with venv
+# create a virtual environment either with venv or conda
 python -m venv ./venv
 # activate the virtual environment
 ./venv/scripts/activate
@@ -13,15 +13,11 @@ python -m venv ./venv
 pip install -r requirements.txt
 
 # or with uv
+uv venv
 uv add -r requirements.txt
 ```
 
 after you can just modify and run the `main.py` , which is the entrypoint of this application
-
-```sh
-# -v for verbose output
-python main.py -v 
-```
 
 ## improvements 
 - seperate plotting from the Linear regression class as a uitils package instead
