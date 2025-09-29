@@ -178,14 +178,16 @@ class LinearRegressionCustom:
             # https://stackoverflow.com/questions/59747313/how-can-i-plot-a-confidence-interval-in-python
             # 2) confidence interval as shaded area
             # some confidence interval
+            x_sorted = np.argsort(X[:,1])
+            x_vals = X[:,1][x_sorted]
             y_pred = np.dot(X, theta).ravel()
             ci = 1.96 * np.std(y - y_pred) / np.sqrt(len(X)) 
             upper_bound = y_pred + ci
             lower_bound = y_pred - ci
             plt.fill_between(
-                X[:,1], 
-                upper_bound, 
-                lower_bound, 
+                x_vals, 
+                upper_bound[x_sorted], 
+                lower_bound[x_sorted], 
                 color='red', 
                 alpha=0.2, 
                 label='95% Confidence Interval'
