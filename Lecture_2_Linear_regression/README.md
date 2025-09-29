@@ -18,6 +18,11 @@ uv add -r requirements.txt
 ```
 
 after you can just modify and run the `main.py` , which is the entrypoint of this application
+```
+py ./main.py
+# or with uv
+uv run ./main.py
+```
 
 ## improvements 
 - seperate plotting from the Linear regression class as a uitils package instead
