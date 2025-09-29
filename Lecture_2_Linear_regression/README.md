@@ -1,6 +1,7 @@
 ## project: setup 🏗️
 - `dataset` should contain the training data `food_truck.txt` and `housing_prices.txt`
 - `lib` contains the the custom implementations of linear regression
+- `main.py` entrypoint
 
 ## project: how to run ? :accessibility:
 First you must install the required libraries either using the `requirements.txt` or the `pyproject.toml`
