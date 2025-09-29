@@ -22,3 +22,7 @@ after you can just modify and run the `main.py` , which is the entrypoint of thi
 # -v for verbose output
 python main.py -v 
 ```
+
+## improvements 
+- seperate plotting from the Linear regression class as a uitils package instead
+- add a example module
