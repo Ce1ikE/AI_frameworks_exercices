@@ -18,12 +18,14 @@ uv add -r requirements.txt
 ```
 
 after you can just modify and run the `main.py` , which is the entrypoint of this application
-```
+```sh
 py ./main.py
 # or with uv
 uv run ./main.py
 ```
 
 ## improvements 
-- seperate plotting from the Linear regression class as a uitils package instead
-- add a example module
+- seperate plotting from the Linear regression class as a utils package/module instead
+- add a Example module
+- like scikit's LinearRegression add a fit_intercept option and a other cost function perhaps (instead of MSE) like MAE , RMSE, LSE, R² to conform to multiple use cases
+- abstract the  LinearRegressionCustom class such that different classes can be build on top of it 
