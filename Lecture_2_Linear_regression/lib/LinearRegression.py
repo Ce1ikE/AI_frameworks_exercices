@@ -91,11 +91,9 @@ class LinearRegressionCustom:
     ):
         self.label_x = label_x
         self.label_y = label_y
-
-        # f(x) = theta_0 + theta_1 * x
         X = X.to_numpy()
         y = y.to_numpy().reshape(-1,1) # (m, 1)
-        # number of training examples , number of features
+        # number of samples , number of features
         self.m , self.n_features = X.shape[0], X.shape[1]
         self.dimension = self.n_features + 1 # +1 for bias term
         
