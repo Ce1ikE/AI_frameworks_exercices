@@ -1,0 +1,17 @@
+{
+    "custom": {
+        "learning_rate": 0.01,
+        "num_iterations": 100000,
+        "final_cost": 1.1060943797296716e-24,
+        "theta": {
+            "theta0": 17.591999999999025,
+            "theta1": 9.757552573704741e-14
+        }
+    },
+    "sklearn": {
+        "intercept": -3.895780878311852,
+        "coefficient": [
+            1.1930336441895937
+        ]
+    }
+}
