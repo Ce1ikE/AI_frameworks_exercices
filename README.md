@@ -12,7 +12,7 @@ Each Lecture folder will have a :
 - `notebooks` a folder 
 
 
-## Repo: contents
+## Repo: contents 🏫
 > `Lecture 2` about Linear regression
 
 > `Lecture 3` about Logistic regression and KMeans
