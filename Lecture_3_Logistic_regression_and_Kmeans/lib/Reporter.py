@@ -38,7 +38,6 @@ class Reporter:
             "fontfamily": "monospace",
         }
 
-
     def to_serializable(self,obj):
         if isinstance(obj, np.ndarray):
             return obj.tolist()
@@ -55,10 +54,10 @@ class Reporter:
     def plot_result(self, lr_c_history):
         iterations = [r['iteration'] for r in lr_c_history]
         costs = [r['cost'] for r in lr_c_history]
-        plt.figure("Cost Function over Iterations")
+        plt.figure("Cost over Iterations")
         plt.plot(iterations, costs, color = 'red',linewidth=0.8)
         plt.title(
-            label='Cost Function over Iterations',
+            label='Cost over Iterations',
             fontdict=self.fontdict,
             pad=10,
             loc="left",
@@ -75,12 +74,12 @@ class Reporter:
         plt.scatter(iterations, costs, marker='o', s=10, color='blue')
         plt.xlabel('Iterations', fontdict=self.fontdict)
         plt.ylabel('Cost', fontdict=self.fontdict)
-        plt.savefig(self.save_path / 'logistic_regression_cost.svg', format='svg')
+        plt.savefig(self.save_path / 'custom_logistic_regression_cost.svg', format='svg')
         plt.close()
 
-    def save_result(self, lr_c: LogisticRegressionCustom):
-        with open(self.save_path / "logistic_regression_results.json", 'w') as f:
-            json.dump(self.to_serializable(lr_c.history), f, indent=4)
+    def save_result(self, lr_c_history):
+        with open(self.save_path / "custom_logistic_regression_history.json", 'w') as f:
+            json.dump(self.to_serializable(lr_c_history), f, indent=4)
 
     def save_final_results(
         self, 
@@ -95,6 +94,8 @@ class Reporter:
         class_labels = np.unique(np.concatenate((y_test, y_pred)))
         cm = confusion_matrix(y_test, y_pred, labels=class_labels)
         self.save_confusion_matrix(cm, class_labels, name='custom')
+        self.plot_result(lr_c.history)
+        self.save_result(lr_c.history)
 
         # --- sklearn logistic regression --- # 
         y_pred = lr.predict(X_test)
@@ -103,6 +104,7 @@ class Reporter:
         cm = confusion_matrix(y_test, y_pred, labels=class_labels)
         self.save_confusion_matrix(cm, class_labels, name='sklearn')
 
+        # --- final results --- #
         final_results = {
             "custom": {
                 "accuracy": accuracy_lr_c,
@@ -120,7 +122,7 @@ class Reporter:
 
         with open(self.save_path / 'final_results.json', 'w') as f:
             json.dump(self.to_serializable(final_results), f, indent=4)
-    
+
     def save_confusion_matrix(self, cm, class_labels,name: str):
         annotations = [[str(cm[i, j]) for j in range(cm.shape[1])] for i in range(cm.shape[0])]
         plt.figure("Confusion Matrix")
@@ -138,7 +140,7 @@ class Reporter:
                 plt.text(j, i, annotations[i][j],
                          horizontalalignment="center",
                          color="white" if cm[i, j] > thresh else "black")
-        plt.savefig(self.save_path / f"confusion_matrix_{name}.svg", format='svg')
+        plt.savefig(self.save_path / f"logistic_regression_confusion_matrix_{name}.svg", format='svg')
         plt.close()
 
     # ----------------- KMeans ----------------- #
@@ -293,9 +295,9 @@ class Reporter:
     def plot_kmeans_3D(self, X, y, labels, centroids=None, title="KMeans 3D Clustering", name: str="kmeans_3D_clustering"):
         fig = plt.figure(title)
         ax = fig.add_subplot(111, projection='3d')
-        scatter = ax.scatter(X[:, 0], X[:, 1], X[:, 2], c=y, cmap='viridis', marker='o', s=30, edgecolor='k')
+        scatter = ax.scatter(X[:, 0], X[:, 1], X[:, 2], c=y, cmap='viridis',marker='o', s=15, edgecolor='k')
         if centroids is not None:
-            ax.scatter(centroids[:, 0], centroids[:, 1], centroids[:, 2], c='red', marker='X', s=200, label='Centroids')
+            ax.scatter(centroids[:, 0], centroids[:, 1], centroids[:, 2], c='red', marker='^', s=90, linewidths=2, label='Centroids')
             ax.legend()
         ax.set_title(title)
         ax.set_xlabel(labels[0], fontdict=self.fontdict)
@@ -303,4 +305,25 @@ class Reporter:
         ax.set_zlabel(labels[2], fontdict=self.fontdict)
         plt.savefig(self.save_path / f"{name}.svg", format='svg')
         plt.close()
+
+        fig = px.scatter_3d(
+            data_frame=pd.DataFrame(X, columns=[labels[0], labels[1], labels[2]]),
+            x=labels[0], 
+            y=labels[1],
+            z=labels[2],
+            color=y, 
+            title=title,
+            labels={ 'x': labels[0], 'y': labels[1], 'z': labels[2] },
+        )
+        fig.add_scatter3d(
+            x=centroids[:, 0],
+            y=centroids[:, 1],
+            z=centroids[:, 2],
+            mode='markers+text',
+            marker=dict(size=8, color='red', symbol='x'),
+            text=[f"C{i}" for i in range(len(centroids))],
+            name='Centroids'
+        )
+        fig.update_traces(marker=dict(size=3))
+        fig.write_html(self.save_path / f"{name}.html")
 

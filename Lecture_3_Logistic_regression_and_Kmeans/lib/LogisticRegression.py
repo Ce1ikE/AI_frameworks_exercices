@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-import pprint
+import copy
 # logistic regression is technically the same as linear regression but with a different cost function
 # and a different prediction function (sigmoid instead of linear)
 # I quote from GeeksforGeeks:
@@ -168,9 +168,10 @@ class LogisticRegressionCustom:
                 self.history.append({
                     "iteration": i, 
                     "cost": cost, 
-                    "thetas": theta.copy().tolist()
+                    "thetas": theta.copy().flatten()
                 })
-                # pprint.pprint(self.history[-1])
+
+        self.theta = theta
 
     def predict(self, X: pd.DataFrame) -> np.ndarray:
         X = X.to_numpy()
@@ -180,10 +181,8 @@ class LogisticRegressionCustom:
             np.ones((m_samples, 1)), 
             X
         ]  
-        theta = self.history[-1]['thetas']
         # get probabilities using the feed forward step
-        
-        probabilities = self.feed_forward(X_b, theta)
+        probabilities = self.feed_forward(X_b, self.theta)
         if len(self.classes) > 2:
             # for multi-class classification, we take the class with the highest probability
             return self.classes[np.argmax(probabilities, axis=1)]
