@@ -9,10 +9,14 @@ Each Lecture folder will have a :
 - `datasets` a folder in which (if required) datasets are placed that are required for the exercices
 - `lib` a folder in which the custom model code is placed along with other utility modules
 - `requirements.txt` `pyproject.toml` 2 manifests that contains all libraries used in the exercices (use which one you prefer)
-- `notebooks` a folder 
+- `notebooks` a folder containing the notebooks for the exercice
 
 
 ## Repo: contents 🏫
 > `Lecture 2` about Linear regression
 
 > `Lecture 3` about Logistic regression and KMeans
+
+> `Lecture 4` about Natural language processing
+
+> `Lecture 3` about Tabular data
