@@ -19,4 +19,6 @@ Each Lecture folder will have a :
 
 > `Lecture 4` about Natural language processing
 
-> `Lecture 3` about Tabular data
+> `Lecture 5` about Tabular data
+
+> `Lecture 6` about PyTorch
