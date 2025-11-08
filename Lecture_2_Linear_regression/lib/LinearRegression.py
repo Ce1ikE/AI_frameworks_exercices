@@ -6,7 +6,7 @@ class LinearRegressionCustom:
     def __init__(
         self,
         save_history_every_n_iter: int = 1000,
-        num_iterations: int = 100000,
+        num_iterations: int = 100000, # epochs
         learning_rate: float = 0.01,
     ):
         # hyperparameters
