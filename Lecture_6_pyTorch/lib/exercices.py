@@ -162,7 +162,7 @@ def autograd(results_dir):
 
     ## When exaclty you need and don't need Autograd?
     # - so autograd enables us to do auto differention (so the backwards pass in a neural net e.g.)
-    #   it does this by retaining a acyclic that has recorded all the operations that created the data
+    #   it does this by retaining a acyclic graph that has recorded all the operations that created the data
     #   x -> x*2 -> x*2 + 5 -> (x*2 + 5)/6 -> etc...
     #   so as i mentioned it retains all operations to perform the backward pass when i want to update my params
     #   so Autograd is usefull during "training" of my NN but during the inferenence much less 
