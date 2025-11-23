@@ -1,0 +1,7 @@
+{
+    "learning_rate": 0.005,
+    "n_hidden": 128,
+    "n_iters": 100000,
+    "n_letters": 57,
+    "total_training_time": "3m 0s"
+}
