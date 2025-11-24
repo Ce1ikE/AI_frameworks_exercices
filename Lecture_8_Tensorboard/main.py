@@ -13,7 +13,6 @@ def main():
     # cnn_fashion_mnist_pytorch(ROOT)
     # cnn_beexants_pytorch(ROOT)
 
-
 if __name__ == "__main__":
     main()
 

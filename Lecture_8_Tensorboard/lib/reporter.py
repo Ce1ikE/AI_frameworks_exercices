@@ -8,7 +8,9 @@ import seaborn as sns
 import numpy as np
 
 from pathlib import Path
+
 from .global_constants import FONTDICT
+from .model import Vocabulary
 
 class NumpySerializer(json.JSONEncoder):
     def default(self, obj):
@@ -79,6 +81,49 @@ class Reporter:
                     indent=4
                 )
             )
+
+    @classmethod
+    def save__lstm_results(
+        cls,
+        model: nn.Module,
+        results_dir: Path,
+        all_losses: list,
+        n_epochs: int,
+        learning_rate: float,
+        embed_dim: int,
+        hidden_size: int,
+        batch_size: int,
+        vocab_size: int,
+        spacy_model: str,
+        voc_creation_time: float,
+        end: str
+    ):
+        all_losses_df = pd.DataFrame(
+            columns=["iter","losses"],
+            data=all_losses
+        )
+        all_losses_df.to_parquet(results_dir / "losses.parquet")
+        
+        torch.save(model.state_dict(),results_dir / "model_state")
+        with open(results_dir / "settings.json",mode="w") as f:
+            f.write(
+                json.dumps(
+                    cls=NumpySerializer,
+                    obj={
+                        "n_epochs" : n_epochs,
+                        "learning_rate" : learning_rate,
+                        "embed_dim" : embed_dim,
+                        "hidden_size" : hidden_size,
+                        "batch_size" : batch_size,
+                        "vocab_size" : vocab_size,
+                        "voc_creation_time" : voc_creation_time,
+                        "spacy_model" : spacy_model,
+                        "total_training_time" : end,
+                    },
+                    indent=4
+                )
+            )
+ 
 
     @classmethod
     def save_confusion_matrix(
@@ -160,14 +205,18 @@ class Reporter:
     @classmethod
     def save__vocabulary(
         cls,
-        vocab: dict,
+        vocab: Vocabulary,
         results_dir: Path
     ):
         with open(results_dir / "vocab.json",mode="w") as f:
             f.write(
                 json.dumps(
                     cls=NumpySerializer,
-                    obj=vocab,
+                    obj={
+                        "word2idx" : vocab.word2idx,
+                        "idx2word" : vocab.idx2word,
+                        "min_freq" : vocab.min_freq
+                    },
                     indent=4
                 )
             )

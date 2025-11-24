@@ -1,0 +1,11 @@
+{
+    "n_epochs": 30,
+    "learning_rate": 0.001,
+    "embed_dim": 256,
+    "hidden_size": 512,
+    "batch_size": 64,
+    "vocab_size": 13410,
+    "voc_creation_time": 47.680381298065186,
+    "spacy_model": "en_core_web_sm",
+    "total_training_time": "2m 45s"
+}
