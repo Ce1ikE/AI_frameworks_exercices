@@ -5,9 +5,7 @@ import time
 import math
 import random
 import torch
-import spacy
 
-from collections import Counter
 from torch.utils.data import Dataset
 
 from .model import device
@@ -72,36 +70,6 @@ class NLPUtils:
         line_tensor = cls.lineToTensor(line)
 
         return category, line, category_tensor, line_tensor
-
-class SpacyTokenizer:
-    def __init__(self, model="en_core_web_sm"):
-        self.nlp = spacy.load(model, disable=["ner", "parser", "tagger"])
-
-    def __call__(self, text):
-        return [t.text.lower() for t in self.nlp(text) if not t.is_space]
-    
-
-class Vocabulary:
-    def __init__(self, min_freq=1):
-        self.min_freq = min_freq
-        self.word2idx = {"<pad>": 0, "<unk>": 1}
-        self.idx2word = ["<pad>", "<unk>"]
-
-    def build(self, token_lists):
-        counter = Counter()
-        for tokens in token_lists:
-            counter.update(tokens)
-
-        for word, freq in counter.items():
-            if freq >= self.min_freq:
-                self.word2idx[word] = len(self.idx2word)
-                self.idx2word.append(word)
-
-    def encode(self, tokens):
-        return [self.word2idx.get(t, 1) for t in tokens]
-
-    def decode(self, ids):
-        return [self.idx2word[i] for i in ids]
 
 
 class TextDataset(Dataset):

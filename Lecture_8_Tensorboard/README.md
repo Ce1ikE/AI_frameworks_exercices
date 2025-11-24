@@ -1,5 +1,5 @@
 ## project: setup 🏗️
-- `dataset` contains the languages dataset and beexant dataset
+- `dataset` contains the languages dataset , beexant dataset and the documentation dataset
 - `lib` contains the the plotting functions and models of this exercice
 - `main.py` entrypoint
 

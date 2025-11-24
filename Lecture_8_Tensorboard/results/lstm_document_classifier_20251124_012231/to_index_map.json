@@ -1,0 +1,7 @@
+{
+    "Business": 0,
+    "Entertainment": 1,
+    "Politics": 2,
+    "Sport": 3,
+    "Technology": 4
+}

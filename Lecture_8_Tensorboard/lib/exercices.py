@@ -15,10 +15,10 @@ from torchvision import datasets, transforms
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 
-from .model import CharRNN, device, cudnn, LSTMClassifier
+from .model import *
 from .utils import *
 from .global_constants import *
-from .reporter import Reporter
+from .reporter import *
 
 # https://docs.pytorch.org/tutorials/intermediate/char_rnn_classification_tutorial.html
 def rnn_languages_pytorch(
@@ -191,11 +191,11 @@ def rnn_languages_pytorch(
 
 def custom_languages_lstm_pytorch(
     ROOT: Path,
-    n_epochs=5,
+    n_epochs=30,
     lr=0.001,
-    hidden_size=256,
+    embed_dim=256,
+    hidden_size=512,
     batch_size=64,
-    max_len=256
 ):
     # using : https://www.kaggle.com/datasets/tanishqdublish/text-classification-documentation
     timestamp = dt.datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -211,11 +211,18 @@ def custom_languages_lstm_pytorch(
     # Technology = 2
     # Entertainment =3
     # Business = 4
+    df['category'] = df['category'].map(
+        {
+            0: 'Politics',
+            1: 'Sport',
+            2: 'Technology',
+            3: 'Entertainment',
+            4: 'Business'
+        },
+    )
 
     all_categories = sorted(df["category"].unique())
-    category_to_index = {int(c): i for i, c in enumerate(all_categories)}
-    # map key number to string label
-    index_to_category = {i: int(c) for i, c in enumerate(all_categories)}
+    category_to_index = {c: i for i, c in enumerate(all_categories)}
 
     n_categories = len(all_categories)
 
@@ -228,11 +235,14 @@ def custom_languages_lstm_pytorch(
     Reporter.save__to_index_map(category_to_index, results_dir)
     Reporter.plot__datasets_distribution(train_df, test_df, results_dir)
 
-    tokenizer = SpacyTokenizer()
+    voc_creation_start = time.time()
+    tokenizer = SpacyTokenizer("en_core_web_md")
     token_lists = [tokenizer(text) for text in train_df["line"].tolist()]
-
-    vocab = Vocabulary(min_freq=2)
+    vocab = Vocabulary(min_freq=3)
     vocab.build(token_lists)
+    voc_creation_end = time.time()
+    voc_creation_time = voc_creation_end - voc_creation_start
+
     vocab_size = len(vocab.idx2word)
     Reporter.save__vocabulary(
         vocab=vocab,
@@ -253,18 +263,20 @@ def custom_languages_lstm_pytorch(
     train_loader = torch.utils.data.DataLoader(
         train_ds, 
         batch_size=batch_size, 
-        shuffle=True
+        shuffle=True,
+        collate_fn=pad_collate
     )
     test_loader = torch.utils.data.DataLoader(
         test_ds, 
         batch_size=batch_size, 
-        shuffle=False
+        shuffle=False,
+        collate_fn=pad_collate
     )
 
     # --------------- init the model --------------- #
     model = LSTMClassifier(
         vocab_size=vocab_size, 
-        embed_dim=128,
+        embed_dim=embed_dim,
         output_dim=n_categories,
         hidden_dim=hidden_size,
         vocab=vocab
@@ -284,12 +296,14 @@ def custom_languages_lstm_pytorch(
         model.train()
         total_loss = 0
 
-        for x, y in train_loader:
+        # custom collate_fn handles padding
+        # which returns (padded_sequences, labels, lengths)
+        for x, y, lengths in train_loader:
             x = x.to(device)
             y = y.to(device)
 
             optimizer.zero_grad()
-            logits = model(x)
+            logits = model(x,lengths)
             loss = criterion(logits, y)
             loss.backward()
             optimizer.step()
@@ -302,15 +316,19 @@ def custom_languages_lstm_pytorch(
 
     end = time.time()
 
-    Reporter.save__training_results(
-        rnn=model,
-        all_losses=all_losses,
+    Reporter.save__lstm_results(
+        model=model,
         results_dir=results_dir,
-        learning_rate=lr,
-        n_hidden=hidden_size,
+        all_losses=all_losses,
         n_epochs=n_epochs,
-        n_letters=vocab_size,
-        end=timeSince(start),
+        learning_rate=lr,
+        embed_dim=embed_dim,
+        hidden_size=hidden_size,
+        batch_size=batch_size,
+        vocab_size=vocab_size,
+        spacy_model=tokenizer.model,
+        voc_creation_time=voc_creation_time,
+        end=timeSince(start)
     )
 
     Reporter.plot__loss_over_time(results_dir)
@@ -319,9 +337,9 @@ def custom_languages_lstm_pytorch(
 
     model.eval()
     with torch.no_grad():
-        for x, y in test_loader:
+        for x, y, lengths in test_loader:
             x = x.to(device)
-            logits = model(x)
+            logits = model(x,lengths)
             preds = torch.argmax(logits, dim=1).cpu().numpy()
 
             for t, p in zip(y.numpy(), preds):
@@ -332,6 +350,18 @@ def custom_languages_lstm_pytorch(
     Reporter.save_confusion_matrix(df_cm, results_dir)
     Reporter.plot__confusion_matrix(results_dir)
 
+
+    torch.onnx.export(
+        model,
+        (x,lengths),
+        results_dir / "model.onnx",
+        input_names=['input'],
+        output_names=['output'],
+        dynamic_axes={
+            'input' : {0 : 'batch_size', 1 : 'sequence_length'},
+            'output' : {0 : 'batch_size'}
+        }
+    )
 
 # ////////////////////////////////////////////////////////////////////////
 # ////////////////////////////////////////////////////////////////////////
