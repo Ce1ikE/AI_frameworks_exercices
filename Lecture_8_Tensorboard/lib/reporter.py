@@ -226,7 +226,8 @@ class Reporter:
         cls,
         train_data: pd.DataFrame,
         test_data: pd.DataFrame,
-        results_dir: Path
+        results_dir: Path,
+        title: str = "Dataset Category Distribution"
     ):
         from matplotlib import pyplot as plt
         import seaborn as sns
@@ -252,7 +253,7 @@ class Reporter:
         plt.xticks(rotation=45,ha="right")
         plt.grid(visible=True,which="both",alpha=0.8)
         plt.tight_layout()
-        plt.savefig(results_dir / "dataset_languages_names_category_distribution.svg",format="svg")
+        plt.savefig(results_dir / f"{title.replace(" ","_").lower()}.svg",format="svg")
         plt.close()
 
     @classmethod
