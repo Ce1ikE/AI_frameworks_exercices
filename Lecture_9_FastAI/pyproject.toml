@@ -1,0 +1,9 @@
+[project]
+name = "lecture-9-fastai"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastai>=2.8.5",
+]
