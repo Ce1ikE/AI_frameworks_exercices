@@ -1,0 +1,21 @@
+{
+    "ENV_DESC": [
+        "SFFFFHHHFF",
+        "FHFFFHHFFF",
+        "FFHFFFFHFF",
+        "HFHHFFFFHF",
+        "FHFHFFFFFF",
+        "HFFFFFFHHH",
+        "FFFFFFFHFH",
+        "FFHHFFFFHF",
+        "HFFFHFFFFF",
+        "FHFFFFFFFG"
+    ],
+    "ENV_IS_SLIPPERY": false,
+    "ENV_REWARD_SCHEDULE": [
+        1,
+        -1,
+        -0.01
+    ],
+    "ENV_SUCCESS_RATE": 0.8
+}

@@ -1,0 +1,16 @@
+[project]
+name = "lecture-10-rl"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "gym>=0.26.2",
+    "gymnasium[toy-text]>=1.2.2",
+    "matplotlib>=3.10.7",
+    "onnx>=1.20.0",
+    "onnxruntime>=1.23.2",
+    "pandas>=2.3.3",
+    "pyarrow>=22.0.0",
+    "tqdm>=4.67.1",
+]

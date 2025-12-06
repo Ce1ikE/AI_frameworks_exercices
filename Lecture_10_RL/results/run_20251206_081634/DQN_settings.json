@@ -1,0 +1,14 @@
+{
+    "num_episodes": 1500,
+    "max_steps_per_episode": 75,
+    "learning_rate": 0.001,
+    "discount_rate": 0.9,
+    "exploration_rate": 0.22888633387263888,
+    "max_exploration_rate": 0.99,
+    "min_exploration_rate": 0.01,
+    "exploration_decay_rate": 0.001,
+    "replay_buffer_size": 10000,
+    "batch_size": 32,
+    "target_update_frequency": 50,
+    "warmup_steps": 500
+}
