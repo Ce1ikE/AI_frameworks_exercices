@@ -1,0 +1,8 @@
+{
+    "mean_reward": -0.17000000000000084,
+    "successful_episodes": 100,
+    "num_episodes": 100,
+    "success_rate": 1.0,
+    "max_steps_per_episode": 150,
+    "average_steps_per_episode": 118.0
+}
