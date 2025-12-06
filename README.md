@@ -22,3 +22,11 @@ Each Lecture folder will have a :
 > `Lecture 5` about Tabular data
 
 > `Lecture 6` about PyTorch
+
+> `Lecture 7` about PyTorch
+
+> `Lecture 8` about PyTorch and Tensorboard
+
+> `Lecture 9` about FastAI
+
+> `Lecture 10` about Reinforcement learning
