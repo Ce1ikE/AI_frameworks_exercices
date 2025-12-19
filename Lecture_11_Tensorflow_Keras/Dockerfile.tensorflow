@@ -1,0 +1,40 @@
+# it's easier to use a Docker container for TensorFlow with GPU support
+# then to install all dependencies manually
+FROM tensorflow/tensorflow:latest-gpu
+
+WORKDIR /app
+
+# installing uv package manager for faster installs
+# we copy it from a prebuilt image to avoid installing it from scratch here
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+RUN pip install uv 
+RUN uv pip install --system \
+    "tensorflow[and-cuda]==2.20.0" \
+    "numpy<2.0" \
+    matplotlib \
+    seaborn \
+    pandas \
+    scikit-learn \
+    tqdm \
+    onnx \
+    tf2onnx
+
+VOLUME /app/lib
+VOLUME /app/results
+ENV TF_ENABLE_ONEDNN_OPT=1
+ENV LD_LIBRARY_PATH=/usr/local/lib/python3.11/dist-packages/nvidia/cuda_runtime/lib:$LD_LIBRARY_PATH
+
+CMD ["python", "/app/lib/tensorflow_exercice.py"]
+
+# to build the Docker image, without docker-compose, run:
+# docker build -t tensorflow_keras_exercice -f Dockerfile.tensorflow .
+# to run the Docker container, run:
+# docker run --gpus all -v <local_path_to_results>:/app/results tensorflow_keras_exercice
+# replace <local_path_to_results> with the path on your local machine where you want to save the results
+
+# to use docker-compose, run:
+# docker-compose -f docker-compose.tensorflow.yaml up --build
+
+# to enable GPU support, make sure you have the NVIDIA Container Toolkit installed:
+# and also the docker NVIDIA runtime configured as default:
+# https://hub.docker.com/layers/nvidia/cuda/12.0.0-base-ubuntu22.04/images/sha256-c545709ac83cac6b81f4e9c93019e5b2ef178e276d25d9a5f25e7e30a3529987
