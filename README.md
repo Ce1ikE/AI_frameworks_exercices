@@ -30,3 +30,5 @@ Each Lecture folder will have a :
 > `Lecture 9` about FastAI
 
 > `Lecture 10` about Reinforcement learning
+
+> `Lecture 11` about Tensorflow vs PyTorch
