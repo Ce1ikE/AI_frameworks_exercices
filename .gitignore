@@ -206,3 +206,7 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+
+Lecture_11_Tensorflow_Keras/datasets/cifar-10-batches-py/
+Lecture_11_Tensorflow_Keras/datasets/cifar-10-python.tar.gz

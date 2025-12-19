@@ -1,0 +1,14 @@
+[project]
+name = "lecture-11-tensorflow-keras"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "matplotlib>=3.10.7",
+    "pip>=25.3",
+    "scikit-learn>=1.7.2",
+    "seaborn>=0.13.2",
+    "tensorflow>=2.20.0",
+    "tqdm>=4.67.1",
+]

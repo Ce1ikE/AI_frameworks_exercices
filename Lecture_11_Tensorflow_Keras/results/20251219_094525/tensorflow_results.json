@@ -1,0 +1,8 @@
+{
+    "test_accuracy": 0.7070000171661377,
+    "test_loss": 0.8599318265914917,
+    "n_test_samples": 10000,
+    "n_correct": 7070,
+    "epochs": 35,
+    "batch_size": 128
+}

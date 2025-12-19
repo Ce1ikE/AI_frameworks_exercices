@@ -1,0 +1,31 @@
+
+
+
+services:
+  tensorflow_training:
+    build:
+      context: .
+      dockerfile: Dockerfile.tensorflow
+    container_name: tf_training
+    stdin_open: true
+    ports:
+      - 8888:8888
+    volumes:
+      - ./lib:/app/lib
+      - ./datasets:/app/data
+      - ./results:/app/results
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - TF_ENABLE_ONEDNN_OPT=1
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - BATCH_SIZE=128
+      - EPOCHS=35
+    
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
